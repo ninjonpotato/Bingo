@@ -54,8 +54,8 @@
 
         text-transform: uppercase;
         display: grid;
-        grid-template-columns: repeat(3, 1fr); /* 5 oszlop egyenlő szélességgel */
-        grid-template-rows: repeat(3, 1fr);    /* 5 sor egyenlő magassággal */
+        grid-template-columns: repeat(3, 1fr); 
+        grid-template-rows: repeat(3, 1fr);    
         gap: 5px;                              /* Térköz a négyzetek között */
     }
 
@@ -173,10 +173,17 @@ $(".interactive_img").on("contextmenu", function() {
 
 
     let timer = false;
-    let ora = 2;
+    let ora = 2.5;
     let time = ora*60;
     let ido = time*60;
-    let meret = 3;
+    let meret = 5;
+
+const gridContainer = document.querySelector(' #board');
+// Beállítjuk a grid oszlopait és sorait
+gridContainer.style.gridTemplateColumns = 'repeat('+meret+', 1fr)';
+gridContainer.style.gridTemplateRows = 'repeat('+meret+', 1fr)';
+
+
     let i=document.getElementById("timer")
                 let hours = Math.floor(ido / 3600);
                 let minutes = Math.floor((ido % 3600) / 60);
