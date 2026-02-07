@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    @font-face {
+        font-family: 'MyFont';
+        src: url('Comic Jungle.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
+    body {
+        font-family: 'MyFont', sans-serif;
+        color: white;
+        background-color: #44ff77;
+        text-align: center;
+        -webkit-text-stroke: 2px black;
+        font-size: 2.5em;
+        padding: 10px;
+
+    }
+    ::-webkit-scrollbar {
+        display: none;
+    }
+    #main {
+        text-align: center;display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+    #timer {
+        color: green;
+        -webkit-text-stroke: 2px black;
+        font-size: 5em;
+        padding: 1px;
+        margin: 5px;
+    }
+    h1 {
+        display: block;
+        padding: 1px;
+        margin: 1px;
+        font-size: 5em;
+    }
+    #board {
+
+        width: fit-content;
+        height: fit-content;
+        background-color: rgb(0,0,0,0.8);
+        background-image: url("https://zeldauniverse.net/wp-content/uploads/2021/05/Skyward-Sword-Link-falling-featured-image-524x264@2x.jpg");
+        background-repeat: no-repeat;
+        background-size: cover;
+
+        text-transform: uppercase;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* 5 oszlop egyenlő szélességgel */
+        grid-template-rows: repeat(3, 1fr);    /* 5 sor egyenlő magassággal */
+        gap: 5px;                              /* Térköz a négyzetek között */
+    }
+
+ .cell {
+
+     text-align: center;
+     border: 1px solid black;
+     width: 500px;
+     height: 500px;
+     font-size: 190%;
+     padding: 10px;
+     font-weight: bold;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+
+ }
+ .active {
+     background-color: rgb(10, 10, 10,0.8);
+ }
+
+    .nyertes {
+        border: 6px solid yellow;
+    }
+    #images {
+        display: flex;
+        position: relative;
+        gap: 200px;
+    }
+    .interactive_img {
+        justify-content: center;
+        scale: 100%;
+        img {
+          object-fit: contain;
+            width: 300px;
+        height: 300px;
+        }
+        a {
+            display: block;
+            font-weight: bold;
+            font-size: 100px;
+            padding: 10px;
+        }
+    }
+    #facecam {
+        position: absolute;
+        top: 0;
+    }
+</style>
+<body>
+
+<div id ="main">
+<!--  <h1>ZELDA BINGÓÓÓ</h1>-->
+<p id="timer">02:00:00</p>
+
+<div id="board">
+</div>
+<div id="images">
+<div class="interactive_img">
+    <img src="eses2.png">
+    <a>FALLS: <span>0</span></a>
+</div>
+<div class="interactive_img">
+    <img src="skull.png">
+    <a>DEATHS: <span>0</span></a>
+</div>
+
+<div class="interactive_img">
+    <img src="puzzle.png">
+    <a>RETRY: <span>0</span></a>
+</div>
+
+</div>
+    </div>
+
+</body>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+<script>
+$(function() {
+
+$(".interactive_img").on("contextmenu", function() {
+  let elem = $(this)
+  elem.animate({scale: "80%"},100).animate({scale: "100%"},100)
+  elem.find("span").text(0)
+  });
+
+  $(".interactive_img").click(function() {
+  let elem = $(this)
+  let db = parseInt(elem.find("span").text());
+  db++;
+  elem.animate({scale: "130%"},100).animate({scale: "100%"},100)
+  elem.find("span").text(db)
+  });
+});
+
+</script>
+<script>
+    let slotok = []
+    fetch("text.txt")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Hiba a fájl beolvasásakor");
+            }
+            return response.text();
+        })
+        .then(text => {
+            let t = text.split("\r");
+            slotok = t
+            createBoard()
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+
+    let timer = false;
+    let ora = 2;
+    let time = ora*60;
+    let ido = time*60;
+    let meret = 3;
+    let i=document.getElementById("timer")
+                let hours = Math.floor(ido / 3600);
+                let minutes = Math.floor((ido % 3600) / 60);
+                let seconds = ido % 60;
+                if( (hours+"").length < 2) {hours = "0"+hours;}
+                if( (minutes+"").length < 2) {minutes = "0"+minutes;}
+                if( (seconds+"").length < 2) {seconds = "0"+seconds;}
+                i.innerHTML=`${hours}:${minutes}:${seconds}`;
+    document.body.addEventListener("keypress", e => {
+        if (e.key === "+"  ) {
+           ido =addTime(ido)
+            console.log(ido)
+        }
+        if(e.key === "Enter") {
+            if(!timer) {
+            timer = true;
+            alert("keződik!")
+
+            setInterval(() => {
+                if(timer) {
+                let i=document.getElementById("timer")
+                let hours = Math.floor(ido / 3600);
+                let minutes = Math.floor((ido % 3600) / 60);
+                let seconds = ido % 60;
+                if( (hours+"").length < 2) {hours = "0"+hours;}
+                if( (minutes+"").length < 2) {minutes = "0"+minutes;}
+                if( (seconds+"").length < 2) {seconds = "0"+seconds;}
+                i.innerHTML=`${hours}:${minutes}:${seconds}`;
+            if(ido < 1) {
+                timer = false;
+
+            }
+                ido--;
+                }
+
+            },1000)}
+        }
+    })
+    function createBoard() {
+
+        let choosen = []
+        let cellak = []
+        for(let i = 0; i < meret; i++) {
+            cellak[i] = [];
+            for(let j = 0; j < meret; j++) {
+                let d = document.createElement("div");
+                let p = document.createElement("p");
+                let r = Math.floor(Math.random()*(slotok.length-1))
+                if(!voltmar(choosen,r)) {
+                    choosen.push(r);
+
+                }else {
+
+                    if(slotok.length >= meret*meret) {
+                        for(let k = 0; k < 100; k++) {
+                            if(voltmar(choosen, r)) {
+                                r = Math.floor(Math.random()*(slotok.length-1))
+                            }
+                            else {
+                                break;
+                            }
+                        }
+                        choosen.push(r);
+                    }else {
+                        r = 0
+                    }
+                }
+                p.innerHTML = slotok[r];
+                d.appendChild(p);
+                d.setAttribute("class", "cell");
+                d.addEventListener("click", () => {
+                    cellak[i][j].valasztva = true;
+                    cellak[i][j].div.setAttribute("class", "cell active");
+                    checkBingo(cellak);
+                })
+                 d.addEventListener("contextmenu", () => {
+                    cellak[i][j].valasztva = false;
+                    cellak[i][j].div.setAttribute("class", "cell");
+    
+                    
+                })
+                let board = document.getElementById("board");
+                board.appendChild(d);
+                cellak[i][j] = {valasztva: false, div:d}
+            }
+        }
+        let dict = {}
+        for(let i = 0; i < meret; i++) {
+            for(let j = 0; j < meret; j++) {
+                let elem =cellak[i][j].div.innerText;
+                if(dict[elem] >= 0) {dict[elem]++;}else {
+                    dict[elem] = 0;
+                }
+
+
+
+            }
+        }
+        console.log(dict)
+    }
+    function addTime(ido) {
+        ido+=60;
+        return ido
+    }
+
+function checkBingo(cellak) {
+        //Átló
+        let helyes = 0;
+        let inv_meret = (meret-1)
+        for(let i = 0; i <= inv_meret; i++) {
+            console.log(i + " " + (inv_meret))
+                if(cellak[i][(inv_meret-i)].valasztva) {
+                    helyes++;
+            }
+        }
+        if(helyes >= meret) {
+             for(let j = 0; j <=inv_meret; j++) {
+                cellak[j][inv_meret-j].div.setAttribute("class", "cell active nyertes");
+            }
+        }
+
+        helyes = 0;
+        for(let i = 0; i < meret; i++) {
+        if( cellak[i][i].valasztva){
+            helyes++;
+        }
+        if(helyes >= meret) {
+            for(let j = 0; j <meret; j++) {
+                cellak[j][j].div.setAttribute("class", "cell active nyertes");
+                }
+            }
+        }
+        //Vizszintes
+    helyes = 0;
+    let nyero_i = 0;
+    for(let i = 0; i < meret; i++) {
+         helyes = 0;
+        for(let j = 0; j < meret; j++) {
+            if(cellak[i][j].valasztva) {
+                helyes++;
+            }
+         }
+         if(helyes >= meret){nyero_i = i;break;}
+        
+    }
+    if(helyes >= meret){
+           for(let j = 0; j <= meret-1; j++) {
+                   cellak[nyero_i][j].div.setAttribute("class", "cell active nyertes");
+           }
+        
+    }
+
+        
+
+
+    helyes = 0;
+   nyero_i = 0;
+    for(let i = 0; i < meret; i++) {
+         helyes = 0;
+        for(let j = 0; j < meret; j++) {
+            if(cellak[j][i].valasztva) {
+                helyes++;
+            }
+         }
+         if(helyes >= meret){nyero_i = i;break;}
+        
+    }
+    if(helyes >= meret){
+           for(let j = 0; j <= meret-1; j++) {
+                   cellak[j][nyero_i].div.setAttribute("class", "cell active nyertes");
+           }
+        
+    }
+}
+function voltmar(tomb,rand) {
+    for(let i = 0; i < slotok.length; i++){
+        if(tomb[i] == rand) {return true;}
+
+    }
+    return false;
+}
+
+
+</script>
+
+</html>
